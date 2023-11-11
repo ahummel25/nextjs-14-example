@@ -1,6 +1,18 @@
 import './globals.css'
+
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { Inter } from 'next/font/google'
+
+import { ThemeProvider } from './theme-provider'
+
+const ThemeSwitcher = dynamic(
+  () =>
+    import('@/components/ThemeSwitcher.tsx').then((module) => module.default),
+  {
+    ssr: false,
+  }
+)
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,8 +27,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ThemeSwitcher />
+          <main>{children}</main>
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
